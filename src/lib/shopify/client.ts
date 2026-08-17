@@ -67,16 +67,18 @@ export async function storefrontFetch<T>({
     token.startsWith("shpca_") ||
     Boolean(process.env.SHOPIFY_STOREFRONT_API_TOKEN);
 
-  const authHeader = isPrivateToken
-    ? { "Shopify-Storefront-Private-Token": token }
-    : { "X-Shopify-Storefront-Access-Token": token };
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (isPrivateToken) {
+    headers["Shopify-Storefront-Private-Token"] = token;
+  } else {
+    headers["X-Shopify-Storefront-Access-Token"] = token;
+  }
 
   const res = await fetch(endpoint, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...authHeader,
-    },
+    headers,
     body: JSON.stringify({ query, variables }),
     cache,
     ...(tags ? { next: { tags } } : {}),
