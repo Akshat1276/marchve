@@ -6,6 +6,7 @@ import type {
   ProductImage,
   ProductVariant,
 } from "./types";
+import { resolveCheckoutUrl } from "./checkout-url";
 
 const API_VERSION =
   process.env.SHOPIFY_STOREFRONT_API_VERSION || "2025-01";
@@ -314,6 +315,6 @@ export function mapShopifyCart(cart: ShopifyCart): Cart {
   return {
     id: cart.id,
     lines,
-    checkoutUrl: cart.checkoutUrl,
+    checkoutUrl: resolveCheckoutUrl(cart.checkoutUrl),
   };
 }

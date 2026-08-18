@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { emptyStates, checkoutHandoff } from "@/content/copy";
+import { resolveCheckoutUrl } from "@/lib/shopify/checkout-url";
 import { formatINR } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
 import { Loader } from "@/components/ui/Loader";
@@ -47,7 +48,7 @@ export default function CartPage() {
       return;
     }
     setCheckingOut(true);
-    window.location.href = checkoutUrl;
+    window.location.href = resolveCheckoutUrl(checkoutUrl);
   };
 
   return (
