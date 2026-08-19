@@ -131,16 +131,6 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <button
-              type="button"
-              onClick={() => setSearchOpen((v) => !v)}
-              aria-label="Search products"
-              className={cn(
-                "inline-flex items-center justify-center text-on-surface-variant transition-colors hover:text-primary"
-              )}
-            >
-              <span className="material-symbols-outlined">search</span>
-            </button>
           </nav>
 
           <button
@@ -154,12 +144,22 @@ export function Header() {
 
           <Link
             href="/"
-            className="absolute left-1/2 -translate-x-1/2"
+            className="absolute left-1/2 -translate-x-1/2 max-md:scale-[0.72] md:scale-100"
           >
             <BrandName />
           </Link>
 
           <div className="flex items-center gap-4 md:gap-5">
+            <button
+              type="button"
+              onClick={() => setSearchOpen((v) => !v)}
+              aria-label="Search products"
+              className={cn(
+                "inline-flex h-6 w-6 items-center justify-center text-on-surface-variant transition-colors hover:text-primary"
+              )}
+            >
+              <span className="material-symbols-outlined">search</span>
+            </button>
             <Link
               href="/cart"
               aria-label="Shopping bag"
