@@ -1,36 +1,13 @@
 import type { Metadata } from "next";
-import {
-  Archivo_Narrow,
-  DM_Sans,
-  EB_Garamond,
-  JetBrains_Mono,
-} from "next/font/google";
+import { Lexend_Peta } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
-const ebGaramond = EB_Garamond({
-  variable: "--font-eb-garamond",
+const lexendPeta = Lexend_Peta({
+  variable: "--font-lexend-peta",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
-
-const archivoNarrow = Archivo_Narrow({
-  variable: "--font-archivo-narrow",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -48,11 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      data-scroll-behavior="smooth"
-      className={`${ebGaramond.variable} ${dmSans.variable} ${archivoNarrow.variable} ${jetbrainsMono.variable} h-full antialiased`}
-    >
+      <html lang="en" data-scroll-behavior="smooth" className={`${lexendPeta.variable} h-full antialiased`}>
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0"

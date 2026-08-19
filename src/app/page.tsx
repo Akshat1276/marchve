@@ -1,17 +1,14 @@
 import Link from "next/link";
-import { VortexGallery } from "@/components/gallery/VortexGallery";
+import { HomeHeroGallery } from "@/components/home/HomeHeroGallery";
 import { ProductCard } from "@/components/ui/ProductCard";
-import { getNewArrivals, getProducts } from "@/lib/shopify/catalog";
+import { getNewArrivals } from "@/lib/shopify/catalog";
 
 export default async function HomePage() {
-  const [galleryProducts, arrivals] = await Promise.all([
-    getProducts("all"),
-    getNewArrivals(4),
-  ]);
+  const arrivals = await getNewArrivals(4);
 
   return (
     <>
-      <VortexGallery products={galleryProducts} />
+      <HomeHeroGallery />
 
       <section className="border-t border-outline-variant/20 bg-background px-margin-mobile py-section-mobile md:px-margin-desktop md:py-section">
         <div className="mb-12 flex items-end justify-between border-b border-outline-variant/30 pb-6">

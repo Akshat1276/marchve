@@ -23,7 +23,7 @@ function formatMeasure(measure: SizeMeasure, unit: Unit): string {
 }
 
 export function SizeGuideTable() {
-  const [tab, setTab] = useState<Tab>("TROUSERS");
+  const [tab, setTab] = useState<Tab>("BOTTOMS");
   const [unit, setUnit] = useState<Unit>("in");
   const table = sizeGuide.tables[tab];
   const unitLabel = unit === "in" ? "IN" : "CM";

@@ -9,7 +9,7 @@ const img = (n: number, alt: string) => ({
 export const COLLECTIONS = [
   { handle: "dresses" as const, title: "Dresses" },
   { handle: "co-ords" as const, title: "Co-ords" },
-  { handle: "trousers" as const, title: "Trousers" },
+  { handle: "trousers" as const, title: "Bottoms" },
   { handle: "shirts-tops" as const, title: "Shirts & Tops" },
   { handle: "skirts" as const, title: "Skirts" },
   { handle: "all" as const, title: "Shop All" },

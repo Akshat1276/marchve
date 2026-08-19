@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { ContactForm } from "@/components/about/ContactForm";
 import { SizeGuideTable } from "@/components/ui/SizeGuideTable";
+import { BrandName } from "@/components/ui/BrandName";
 import { about, brand, contact } from "@/content/copy";
 
 export const metadata = {
-  title: "About",
+  title: "About Us",
 };
 
 export default function AboutPage() {
@@ -40,10 +41,10 @@ export default function AboutPage() {
         </div>
         <div className="relative h-[614px] overflow-hidden md:h-auto">
           <Image
-            src="/products/12.jpg"
+            src="/products/IMAGE-934.jpg"
             alt="Editorial portrait for M'ARCHVE"
             fill
-            className="object-cover grayscale transition-all duration-1000 ease-in-out hover:scale-[1.02] hover:grayscale-0"
+            className="object-cover transition-all duration-1000 ease-in-out hover:scale-[1.02]"
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
           />
@@ -57,7 +58,8 @@ export default function AboutPage() {
               01 — WORLD
             </span>
             <h2 className="font-headline-md text-primary">
-              {about.world.title}
+              {about.world.titleLead}{" "}
+              <BrandName size="inherit" className="text-primary" />
             </h2>
           </div>
           <div className="space-y-6 font-body-main text-on-surface-variant md:col-span-8">
@@ -98,55 +100,34 @@ export default function AboutPage() {
               <h3 className="mb-4 font-label-caps text-on-surface-variant">
                 Support
               </h3>
-              <a
-                href={`mailto:${contact.email}`}
-                className="inline-block border-b border-transparent pb-1 font-body-main text-primary transition-colors hover:border-secondary hover:text-secondary"
-              >
-                {contact.email}
-              </a>
-              <p className="mt-3 font-body-main text-primary">
-                <a
-                  href={contact.phoneHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="border-b border-transparent transition-colors hover:border-secondary hover:text-secondary"
-                >
-                  {contact.phoneLabel} {contact.phone}
-                </a>
-              </p>
-              <p className="mt-2 font-body-small text-on-surface-variant">
-                {contact.supportNote}
-              </p>
-            </div>
-            <div>
-              <h3 className="mb-4 font-label-caps text-on-surface-variant">
-                Hours of Operation
-              </h3>
-              <ul className="space-y-2 font-data-mono text-primary">
-                {contact.hours.map((h) => (
-                  <li
-                    key={h.day}
-                    className={`flex justify-between gap-6 border-b border-outline-variant/20 pb-2 ${
-                      h.time === "CLOSED" ? "text-on-surface-variant" : ""
-                    }`}
+              <dl className="border-t border-outline-variant/30">
+                {contact.supportRows.map((row) => (
+                  <div
+                    key={row.label}
+                    className="grid grid-cols-[6rem_1fr] gap-6 border-b border-outline-variant/20 py-4"
                   >
-                    <span>{h.day}</span>
-                    <span className="text-right">{h.time}</span>
-                  </li>
+                    <dt className="font-label-caps text-on-surface-variant">
+                      {row.label}
+                    </dt>
+                    <dd>
+                      <a
+                        href={row.href}
+                        className="font-body-small text-primary transition-colors hover:text-secondary"
+                      >
+                        {row.value}
+                      </a>
+                    </dd>
+                  </div>
                 ))}
-              </ul>
+              </dl>
             </div>
-            <div>
-              <h3 className="mb-4 font-label-caps text-on-surface-variant">
+            <div className="grid grid-cols-[6rem_1fr] gap-6 pt-6">
+              <span className="font-label-caps text-on-surface-variant">
                 {contact.location.label}
-              </h3>
-              <p className="font-body-main text-primary">
-                {contact.location.lines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-              </p>
+              </span>
+              <span className="font-body-small text-primary">
+                {contact.location.lines.join(", ")}
+              </span>
             </div>
           </div>
         </div>

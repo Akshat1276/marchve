@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { brand } from "@/content/copy";
+import { BrandName } from "@/components/ui/BrandName";
 import { useCartStore } from "@/store/cart";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/shop", label: "Shop" },
-  { href: "/about", label: "About" },
+  { href: "/about", label: "About Us" },
 ];
 
 export function Header() {
@@ -22,7 +23,7 @@ export function Header() {
   useEffect(() => setMounted(true), []);
   useEffect(() => setOpen(false), [pathname]);
 
-  const dark = pathname === "/";
+  const dark = false;
 
   return (
     <>
@@ -66,12 +67,9 @@ export function Header() {
 
           <Link
             href="/"
-            className={cn(
-              "absolute left-1/2 -translate-x-1/2 font-headline-md tracking-tight",
-              dark ? "text-white" : "text-primary"
-            )}
+            className="absolute left-1/2 -translate-x-1/2"
           >
-            {brand.name}
+            <BrandName />
           </Link>
 
           <div className="flex items-center gap-4 md:gap-5">
@@ -127,7 +125,7 @@ export function Header() {
             >
               <div className="mb-12 flex items-start justify-between">
                 <div>
-                  <div className="font-headline-md text-primary">{brand.name}</div>
+                  <BrandName />
                   <p className="mt-2 font-body-small text-on-surface-variant">
                     {brand.tagline}
                   </p>

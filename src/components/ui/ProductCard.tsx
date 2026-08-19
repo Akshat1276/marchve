@@ -45,7 +45,7 @@ export function ProductCard({
       </div>
       <h3 className="font-body-main text-primary">{product.title}</h3>
       <p className="mt-1 font-body-small text-on-surface-variant">
-        {product.colors.join(" / ")} · {product.sizes.join(", ")}
+        {product.colors.join(" / ")}
       </p>
       <p className="mt-2 font-data-mono text-primary">
         {formatINR(product.price)}

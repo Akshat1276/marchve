@@ -31,7 +31,7 @@ export const about = {
     "Every piece is designed to outlive trends and become part of a lasting wardrobe. Crafted in premium fabrics and produced in limited quantities, M'ARCHVE celebrates thoughtful design, versatility and understated luxury.",
   ],
   world: {
-    title: "World of M'ARCHVE",
+    titleLead: "World of",
     lead: "Sophisticated yet relatable, aspirational but warm.",
     body: "We design for the modern woman — confident, refined, and ever-evolving.",
     debut:
@@ -39,18 +39,37 @@ export const about = {
   },
 };
 
+export const social = {
+  instagram: {
+    href: "https://www.instagram.com/marchvemumbai?igsh=MXhrZTJ3eHdoYWd4YQ==",
+    label: "@marchvemumbai",
+  },
+  whatsapp: {
+    href: "https://wa.me/919289052310",
+    label: "WhatsApp",
+  },
+};
+
 export const contact = {
   eyebrow: "03 — INQUIRIES",
   title: "CONTACT US",
-  email: "maisonmarchve@gmail.com",
-  phone: "+91 98202 55349",
+  email: "info@qua.clothing",
+  returnsSubject: "RETURNS",
+  phone: "+91 92890 52310",
   phoneLabel: "WhatsApp",
-  phoneHref: "https://wa.me/919820255349",
-  hours: [
-    { day: "MONDAY – SATURDAY", time: "11:00 AM – 7:00 PM IST" },
-    { day: "SUNDAY", time: "CLOSED" },
+  phoneHref: "https://wa.me/919289052310",
+  supportRows: [
+    {
+      label: "WHATSAPP",
+      value: "+91 92890 52310 · Mon–Sat, 11 AM–7 PM IST",
+      href: "https://wa.me/919289052310",
+    },
+    {
+      label: "EMAIL",
+      value: "info@qua.clothing · Subject: RETURNS",
+      href: "mailto:info@qua.clothing?subject=RETURNS",
+    },
   ],
-  supportNote: "WhatsApp support · Mon–Sat, 11 AM–7 PM IST",
   location: {
     label: "BASED IN",
     lines: ["Mumbai", "India"],
@@ -79,9 +98,9 @@ export type SizeGuideTableData = {
 export const sizeGuide = {
   eyebrow: "02 — MEASUREMENTS",
   title: "SIZE GUIDE",
-  tabs: ["TROUSERS", "SHIRTS & TOPS", "DRESSES"] as const,
+  tabs: ["BOTTOMS", "SHIRTS & TOPS", "DRESSES"] as const,
   tables: {
-    TROUSERS: {
+    BOTTOMS: {
       columns: [
         { key: "waist", label: "WAIST" },
         { key: "hips", label: "HIPS" },
@@ -157,39 +176,43 @@ export const sizeGuide = {
 };
 
 export const shippingReturns = {
-  title: "Shipping, Returns & Refunds",
-  intro:
-    "Returns and exchanges are handled carefully so each piece stays in archive condition. Please read the eligibility rules before initiating a request.",
+  title: "Returns & Exchanges Policy",
+  intro: "",
   sections: [
     {
       heading: "Return Eligibility",
-      body: "",
+      body:
+        "Returns and exchanges must be requested within 14 days of receipt. Requests after this window will not be accepted.",
       bullets: [
-        "Returns and exchanges must be requested within 7 days of receipt. Requests after this window will not be accepted.",
-        "Only one return or exchange is permitted per order.",
-        "Only one exchange is allowed per order.",
-        "Items must be unworn, unwashed, and undamaged, with all original tags attached.",
-        "Please return items in their original packaging to protect them in transit.",
-        "Clothing sent without prior written approval will not be accepted.",
-        "Once approved, exchanges are processed within 7 working days.",
+        "We do not offer refunds. Approved returns are issued as store credit only.",
       ],
     },
     {
       heading: "How to Initiate a Return",
-      body: "The quickest way is through our Return Order Portal. Alternatively, follow the steps below.",
-      steps: [
-        "Email maisonmarchve@gmail.com from your registered email address, or WhatsApp +91 98202 55349 — within 7 days of receipt.",
-        "Use the subject line: RETURNS",
-        "Wait for written approval. You will receive packing and dispatch instructions once your request is reviewed. Do not send items before receiving written approval. Unapproved returns will not be accepted.",
+      paragraphs: [
+        `To request a return or exchange, please email ${contact.email} within 14 days of delivery.`,
+        "Our team will review your request and guide you through the next steps.",
+        "All returns are subject to approval based on our return policy. Returns sent without prior authorisation may not be accepted.",
       ],
     },
     {
-      heading: "Support",
-      body: "",
-      bullets: [
-        "WhatsApp +91 98202 55349 · Mon–Sat, 11 AM–7 PM IST",
-        "Email maisonmarchve@gmail.com · Subject: RETURNS",
-        "Hours: Monday – Saturday · 11:00 AM – 7:00 PM IST",
+      heading: "When will I receive my store credit?",
+      paragraphs: [
+        "Once your return has been approved, your store credit will be issued via email as a Shopify Gift Card.",
+        "Store credit is valid for 12 months from the date of issue and applies to the value of the returned garment only.",
+        "Original shipping charges are non-refundable, and return shipping costs are the responsibility of the customer.",
+      ],
+    },
+    {
+      heading: "Who covers return shipping?",
+      body:
+        "Return shipping costs are the responsibility of the customer. Original shipping charges are non-refundable and store credit applies only to the value of the returned garment.",
+    },
+    {
+      heading: "What happens if my return doesn't meet the return conditions?",
+      paragraphs: [
+        "Items returned without their original tags, or those that have been worn, washed, used or altered, cannot be accepted.",
+        "Returns sent without prior authorisation may be refused, and it will be the customer's responsibility to arrange collection of the garment.",
       ],
     },
   ],

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader } from "@/components/ui/Loader";
+import { contact } from "@/content/copy";
 
 const schema = z.object({
   name: z.string().min(2, "Please enter your name"),
@@ -100,7 +101,7 @@ export function ContactForm() {
         )}
         {status === "error" && (
           <p className="font-body-small text-error">
-            Something went wrong. Please email maisonmarchve@gmail.com.
+            Something went wrong. Please email {contact.email}.
           </p>
         )}
       </form>

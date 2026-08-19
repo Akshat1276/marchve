@@ -12,6 +12,7 @@ import {
 } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { brand } from "@/content/copy";
+import { BrandName } from "@/components/ui/BrandName";
 import type { Product } from "@/lib/shopify/types";
 import { Loader } from "@/components/ui/Loader";
 
@@ -116,9 +117,7 @@ export function VortexGallery({ products }: VortexGalleryProps) {
                 "radial-gradient(ellipse at center, black 28%, transparent 72%)",
             }}
           />
-          <h1 className="font-display-lg text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.45)]">
-            {brand.name}
-          </h1>
+          <BrandName size="logo-lg" className="text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.45)]" />
           <p className="mt-4 font-label-caps text-white/85 drop-shadow-[0_1px_12px_rgba(0,0,0,0.4)]">
             {brand.tagline}
           </p>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandName } from "@/components/ui/BrandName";
 
 export const metadata = {
   title: "Account",
@@ -8,7 +9,9 @@ export default function AccountPage() {
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-margin-mobile pb-section-mobile pt-28 md:px-margin-desktop">
       <div className="w-full max-w-md border border-outline-variant/30 p-12">
-        <h1 className="text-center font-headline-md text-primary">M&apos;ARCHVE</h1>
+        <h1 className="text-center">
+          <BrandName />
+        </h1>
         <p className="mt-3 text-center font-body-small text-on-surface-variant">
           Access your personal archive.
         </p>

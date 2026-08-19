@@ -2,7 +2,7 @@ import Link from "next/link";
 import { contact, shippingReturns } from "@/content/copy";
 
 export const metadata = {
-  title: "Shipping & Returns",
+  title: "Returns & Exchanges Policy",
 };
 
 export default function ShippingReturnsPage() {
@@ -10,10 +10,14 @@ export default function ShippingReturnsPage() {
     <div className="px-margin-mobile pb-section-mobile pt-28 md:px-margin-desktop md:pb-section">
       <div className="mx-auto max-w-3xl">
         <h1 className="font-headline-md text-primary">{shippingReturns.title}</h1>
-        <p className="mt-6 font-body-main text-on-surface-variant">
-          {shippingReturns.intro}
-        </p>
-        <div className="mt-16 space-y-12">
+        {shippingReturns.intro ? (
+          <p className="mt-6 font-body-main text-on-surface-variant">
+            {shippingReturns.intro}
+          </p>
+        ) : null}
+        <div
+          className={`space-y-12 ${shippingReturns.intro ? "mt-16" : "mt-10"}`}
+        >
           {shippingReturns.sections.map((section) => (
             <section
               key={section.heading}
@@ -26,6 +30,13 @@ export default function ShippingReturnsPage() {
                 <p className="mb-6 font-body-main text-on-surface-variant">
                   {section.body}
                 </p>
+              ) : null}
+              {"paragraphs" in section && section.paragraphs ? (
+                <div className="space-y-4 font-body-main text-on-surface-variant">
+                  {section.paragraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
               ) : null}
               {"bullets" in section && section.bullets ? (
                 <ul className="space-y-3 font-body-main text-on-surface-variant">

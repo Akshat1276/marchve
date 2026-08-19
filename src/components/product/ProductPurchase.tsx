@@ -8,6 +8,13 @@ import { formatINR, cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
 import { Loader } from "@/components/ui/Loader";
 
+function formatPriceWithTax(productPrice: number) {
+  const amount = new Intl.NumberFormat("en-IN", {
+    maximumFractionDigits: 0,
+  }).format(productPrice);
+  return `${amount} INR / Taxes Included`;
+}
+
 export function ProductPurchase({
   product,
   color: colorProp,
@@ -29,7 +36,7 @@ export function ProductPurchase({
     ) ?? product.sizes[0]
   );
   const [adding, setAdding] = useState(false);
-  const [openAcc, setOpenAcc] = useState<string | null>("fabric");
+  const [openAcc, setOpenAcc] = useState<string | null>(null);
   const addItem = useCartStore((s) => s.addItem);
 
   const available = product.variants.some(
@@ -48,41 +55,18 @@ export function ProductPurchase({
     }
   };
 
+  const toggleAcc = (id: string) =>
+    setOpenAcc((current) => (current === id ? null : id));
+
   return (
     <div className="flex h-full flex-col justify-center px-margin-mobile py-12 md:px-12 lg:px-16">
-      <p className="mb-3 font-label-caps text-on-surface-variant">
-        {product.category}
-      </p>
       <h1 className="font-headline-md text-primary">{product.title}</h1>
+
       <p className="mt-4 font-data-mono text-primary">
-        {formatINR(product.price)}
-      </p>
-      <p className="mt-8 max-w-md font-body-main text-on-surface-variant">
-        {product.description}
+        {formatPriceWithTax(product.price)}
       </p>
 
       <div className="mt-10">
-        <p className="mb-4 font-label-caps text-on-surface-variant">Colour</p>
-        <div className="flex flex-wrap gap-3">
-          {product.colors.map((c) => (
-            <button
-              key={c}
-              type="button"
-              onClick={() => setColor(c)}
-              className={cn(
-                "min-w-8 border px-3 py-2 font-label-caps",
-                color === c
-                  ? "border-primary text-primary"
-                  : "border-outline-variant text-on-surface-variant"
-              )}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-8">
         <div className="mb-4 flex items-center justify-between">
           <p className="font-label-caps text-on-surface-variant">Size</p>
           <Link
@@ -118,13 +102,34 @@ export function ProductPurchase({
         </div>
       </div>
 
+      <div className="mt-8">
+        <p className="mb-4 font-label-caps text-on-surface-variant">Colour</p>
+        <div className="flex flex-wrap gap-3">
+          {product.colors.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setColor(c)}
+              className={cn(
+                "min-w-8 border px-3 py-2 font-label-caps",
+                color === c
+                  ? "border-primary text-primary"
+                  : "border-outline-variant text-on-surface-variant"
+              )}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <button
         type="button"
         disabled={!available || adding}
         onClick={onAdd}
         className="mt-10 w-full bg-primary py-4 font-label-caps text-on-primary transition-colors duration-400 hover:bg-secondary disabled:opacity-50"
       >
-        {adding ? "Adding…" : "Add to Bag"}
+        {adding ? "Adding…" : "Add to Cart"}
       </button>
 
       <AnimatePresence>
@@ -141,37 +146,49 @@ export function ProductPurchase({
       </AnimatePresence>
 
       <div className="mt-12 space-y-0 border-t border-outline-variant/30">
+        {product.description && (
+          <Accordion
+            title="Description"
+            open={openAcc === "description"}
+            onToggle={() => toggleAcc("description")}
+          >
+            <p className="font-body-main text-on-surface-variant">
+              {product.description}
+            </p>
+          </Accordion>
+        )}
+
         <Accordion
-          id="fabric"
           title="Fabric & Care"
           open={openAcc === "fabric"}
-          onToggle={() =>
-            setOpenAcc(openAcc === "fabric" ? null : "fabric")
-          }
+          onToggle={() => toggleAcc("fabric")}
         >
-          <dl className="space-y-3 font-data-mono text-on-surface-variant">
-            <div className="flex justify-between border-b border-outline-variant/20 pb-2">
-              <dt>Composition</dt>
-              <dd className="text-primary">{product.fabric}</dd>
+          <dl className="space-y-0 font-body-main">
+            <div className="grid grid-cols-2 gap-4 border-b border-outline-variant/20 py-3">
+              <dt className="text-on-surface-variant">Composition</dt>
+              <dd className="text-right font-data-mono text-primary">
+                {product.fabric}
+              </dd>
             </div>
-            <div className="flex justify-between border-b border-outline-variant/20 pb-2">
-              <dt>Care</dt>
-              <dd className="text-primary">{product.care}</dd>
+            <div className="grid grid-cols-2 gap-4 border-b border-outline-variant/20 py-3">
+              <dt className="text-on-surface-variant">Care</dt>
+              <dd className="text-right font-data-mono text-primary">
+                {product.care}
+              </dd>
             </div>
           </dl>
         </Accordion>
+
         <Accordion
-          id="shipping"
-          title="Shipping & Returns"
+          title="Shipping"
           open={openAcc === "shipping"}
-          onToggle={() =>
-            setOpenAcc(openAcc === "shipping" ? null : "shipping")
-          }
+          onToggle={() => toggleAcc("shipping")}
         >
           <p className="font-body-small text-on-surface-variant">
             Dispatch in {product.dispatchTime}. Returns and exchanges must be
-            requested within 7 days of receipt — unworn, with tags, and only
-            after written approval.{" "}
+            requested within 14 days of receipt. Approved returns are issued as
+            store credit only — unworn, with tags, and only after written
+            approval.{" "}
             <Link href="/shipping-returns" className="text-primary underline">
               Full policy
             </Link>
@@ -188,7 +205,6 @@ function Accordion({
   onToggle,
   children,
 }: {
-  id: string;
   title: string;
   open: boolean;
   onToggle: () => void;

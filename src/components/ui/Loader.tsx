@@ -2,7 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { brand, loaderLines } from "@/content/copy";
+import { loaderLines } from "@/content/copy";
+import { BrandName } from "@/components/ui/BrandName";
 import { cn } from "@/lib/utils";
 
 interface LoaderProps {
@@ -35,14 +36,7 @@ export function Loader({
         className
       )}
     >
-      <div
-        className={cn(
-          "font-headline-md tracking-tight",
-          onDark ? "text-white" : "text-primary"
-        )}
-      >
-        {brand.name}
-      </div>
+      <BrandName className={onDark ? "text-white" : undefined} />
       <div
         className={cn(
           "relative h-px w-48 overflow-hidden",
