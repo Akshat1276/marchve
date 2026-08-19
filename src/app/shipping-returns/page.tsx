@@ -48,20 +48,6 @@ export default function ShippingReturnsPage() {
                   ))}
                 </ul>
               ) : null}
-              {"steps" in section && section.steps ? (
-                <ol className="space-y-5">
-                  {section.steps.map((step, index) => (
-                    <li key={step} className="flex gap-4">
-                      <span className="font-data-mono text-primary">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <p className="font-body-main text-on-surface-variant">
-                        {step}
-                      </p>
-                    </li>
-                  ))}
-                </ol>
-              ) : null}
             </section>
           ))}
         </div>
