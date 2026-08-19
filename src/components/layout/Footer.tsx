@@ -6,7 +6,8 @@ const EXPLORE = [
   { href: "/shop", label: "Shop" },
   { href: "/about", label: "About Us" },
   { href: "/about#size-guide", label: "Size Guide" },
-  { href: "/shipping-returns", label: "Shipping & Returns" },
+  { href: "/shipping-returns", label: "Return & Exchange Policy" },
+  { href: "/shipping-delivery", label: "Shipping & Delivery Policy" },
   { href: "/track-order", label: "Track Order" },
 ];
 

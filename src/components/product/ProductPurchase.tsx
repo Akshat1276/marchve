@@ -185,13 +185,17 @@ export function ProductPurchase({
           onToggle={() => toggleAcc("shipping")}
         >
           <p className="font-body-small text-on-surface-variant">
-            Dispatch in {product.dispatchTime}. Returns and exchanges must be
-            requested within 14 days of receipt. Approved returns are issued as
-            store credit only — unworn, with tags, and only after written
-            approval.{" "}
-            <Link href="/shipping-returns" className="text-primary underline">
-              Full policy
+            We're committed to delivering your pieces with care and efficiency.
+            For full details on delivery times and costs, please visit our{" "}
+            <Link
+              href="/shipping-delivery"
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary underline"
+            >
+              Shipping Information
             </Link>
+            {" "}page.
           </p>
         </Accordion>
       </div>

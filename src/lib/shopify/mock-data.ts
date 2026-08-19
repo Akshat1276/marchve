@@ -9,7 +9,7 @@ const img = (n: number, alt: string) => ({
 export const COLLECTIONS = [
   { handle: "dresses" as const, title: "Dresses" },
   { handle: "co-ords" as const, title: "Co-ords" },
-  { handle: "trousers" as const, title: "Bottoms" },
+  { handle: "bottoms" as const, title: "Bottoms" },
   { handle: "shirts-tops" as const, title: "Shirts & Tops" },
   { handle: "skirts" as const, title: "Skirts" },
   { handle: "all" as const, title: "Shop All" },
@@ -59,7 +59,7 @@ export const PRODUCTS: Product[] = [
     handle: "frame-trousers",
     title: "Frame Trousers",
     category: "Trousers",
-    collection: "trousers",
+    collection: "bottoms",
     description:
       "A tailored trouser with a framed waist and fluid fall. Soft structure for studio-to-street movement.",
     price: 7900,
@@ -93,7 +93,7 @@ export const PRODUCTS: Product[] = [
     handle: "essential-pants",
     title: "Essential Pants",
     category: "Trousers",
-    collection: "trousers",
+    collection: "bottoms",
     description:
       "Everyday archive trousers in a lyocell-linen blend. Available in espresso and tan.",
     price: 6500,

@@ -1,7 +1,7 @@
 export type CollectionHandle =
   | "dresses"
   | "co-ords"
-  | "trousers"
+  | "bottoms"
   | "shirts-tops"
   | "skirts"
   | "all";

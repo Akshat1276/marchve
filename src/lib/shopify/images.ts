@@ -71,12 +71,27 @@ export function imagesForColor(
 
   if (matched.length > 0) {
     if (fallbackImage?.src) {
+      // Only prepend the variant image if it actually belongs to this color.
+      // If it matches a *different* color it is the wrong hero shot (e.g. a
+      // Black variant image prepended when the user selects Grey).
+      const fallbackColor = bestColorForImage(fallbackImage, allColors);
+      const fallbackBelongs = fallbackColor === color || fallbackColor === null;
       const withoutDup = matched.filter((img) => img.src !== fallbackImage.src);
-      return [fallbackImage, ...withoutDup];
+      return fallbackBelongs
+        ? [fallbackImage, ...withoutDup]
+        : withoutDup.length > 0
+          ? withoutDup
+          : matched;
     }
     return matched;
   }
 
-  if (fallbackImage?.src) return [fallbackImage];
+  // Nothing matched by filename — only use fallbackImage if it belongs to this color
+  if (fallbackImage?.src) {
+    const fallbackColor = bestColorForImage(fallbackImage, allColors);
+    if (fallbackColor === color || fallbackColor === null) {
+      return [fallbackImage];
+    }
+  }
   return images;
 }

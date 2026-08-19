@@ -190,8 +190,8 @@
   .brand-name__apostrophe {
     font-size: 1em;
     line-height: 1;
-    margin-left: -0.02em;   /* distance from M */
-    margin-right: -0.08em;  /* distance from A — tune this */
+    margin-left: -0.19em;   /* distance from M */
+    margin-right: -0.2em;  /* distance from A — tune this */
     position: relative;
     top: 0.048em;
   }
@@ -281,5 +281,29 @@
   .nav-link-hover:hover::after,
   .nav-link-hover[data-active="true"]::after {
     width: 100%;
+  }
+
+  .scroll-y-minimal {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--outline-variant) 70%, transparent)
+      transparent;
+  }
+
+  .scroll-y-minimal::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  .scroll-y-minimal::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scroll-y-minimal::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--outline-variant) 75%, transparent);
+    border-radius: 999px;
+  }
+
+  .scroll-y-minimal::-webkit-scrollbar-thumb:hover {
+    background: var(--outline-variant);
   }
 }

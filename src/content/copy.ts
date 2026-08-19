@@ -45,7 +45,7 @@ export const social = {
     label: "@marchvemumbai",
   },
   whatsapp: {
-    href: "https://wa.me/919289052310",
+    href: "https://wa.me/919820255349",
     label: "WhatsApp",
   },
 };
@@ -53,21 +53,20 @@ export const social = {
 export const contact = {
   eyebrow: "03 — INQUIRIES",
   title: "CONTACT US",
-  email: "info@qua.clothing",
-  returnsSubject: "RETURNS",
-  phone: "+91 92890 52310",
+  email: "maisonmarchve@gmail.com",
+  phone: "+91 98202 55349",
   phoneLabel: "WhatsApp",
-  phoneHref: "https://wa.me/919289052310",
+  phoneHref: "https://wa.me/919820255349",
   supportRows: [
     {
       label: "WHATSAPP",
-      value: "+91 92890 52310 · Mon–Sat, 11 AM–7 PM IST",
-      href: "https://wa.me/919289052310",
+      value: "+91 98202 55349 · Mon–Sat, 11 AM–7 PM IST",
+      href: "https://wa.me/919820255349",
     },
     {
       label: "EMAIL",
-      value: "info@qua.clothing · Subject: RETURNS",
-      href: "mailto:info@qua.clothing?subject=RETURNS",
+      value: "maisonmarchve@gmail.com",
+      href: "mailto:maisonmarchve@gmail.com",
     },
   ],
   location: {
@@ -185,6 +184,10 @@ export const shippingReturns = {
         "Returns and exchanges must be requested within 14 days of receipt. Requests after this window will not be accepted.",
       bullets: [
         "We do not offer refunds. Approved returns are issued as store credit only.",
+        "Only one return or exchange is permitted per order.",
+        "Only one exchange is allowed per order, regardless of reason.",
+        "Items must be unworn, unwashed, and undamaged, with all original tags attached.",
+        "Please return items in their original packaging to protect them in transit.",
       ],
     },
     {

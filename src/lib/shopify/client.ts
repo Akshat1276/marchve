@@ -182,10 +182,105 @@ export type ShopifyCart = {
 const COLLECTION_HANDLES: Exclude<CollectionHandle, "all">[] = [
   "dresses",
   "co-ords",
-  "trousers",
+  "bottoms",
   "shirts-tops",
   "skirts",
 ];
+
+function appendUnique(parts: string[], value: string) {
+  const normalized = value.replace(/[.]+$/, "").trim();
+  if (!normalized) return;
+  const exists = parts.some(
+    (part) =>
+      part.toLowerCase() === normalized.toLowerCase() ||
+      part.toLowerCase().includes(normalized.toLowerCase()) ||
+      normalized.toLowerCase().includes(part.toLowerCase())
+  );
+  if (!exists) parts.push(normalized);
+}
+
+function mergeProductField(
+  metafield: string | undefined,
+  extracted: string | null,
+  fallback: string
+) {
+  const meta = metafield?.trim();
+  const ext = extracted?.trim();
+
+  if (!meta && !ext) return fallback;
+  if (!meta) return ext!;
+  if (!ext) return meta;
+  if (meta.toLowerCase() === ext.toLowerCase()) return meta;
+  if (meta.toLowerCase().includes(ext.toLowerCase())) return meta;
+  if (ext.toLowerCase().includes(meta.toLowerCase())) return ext;
+
+  const genericValues = new Set(["see care label", "dry clean only"]);
+  if (genericValues.has(meta.toLowerCase())) return ext;
+
+  return `${meta.replace(/[.]+$/, "")}. ${ext.replace(/[.]+$/, "")}`;
+}
+
+function extractDescriptionDetails(description: string) {
+  const sentences = description
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(/(?<=[.!?])\s+/)
+    .filter(Boolean);
+
+  const fabricParts: string[] = [];
+  const careParts: string[] = [];
+  let dispatchTime: string | null = null;
+  const kept: string[] = [];
+
+  for (const sentence of sentences) {
+    const text = sentence.trim();
+    if (!text) continue;
+
+    const compositionLike =
+      /\b\d{1,3}\s*%/i.test(text) ||
+      /\b(composition|fabric)\b/i.test(text);
+    const careLike = /\b(dry clean|hand wash|machine wash|steam)\b/i.test(text);
+    const shippingMatch = text.match(
+      /\bships?\s+in\s+(\d+\s*-\s*\d+\s*days?)\b/i
+    );
+
+    if (shippingMatch) {
+      dispatchTime = shippingMatch[1].replace(/\s+/g, "");
+      continue;
+    }
+
+    if (compositionLike && careLike) {
+      const dryCleanMatch = text.match(/\bDry\s*Clean\s*only\b/i);
+      const dryClean = dryCleanMatch?.[0] ?? null;
+      if (dryClean) appendUnique(careParts, dryClean);
+
+      const fabricText = dryClean
+        ? text.replace(new RegExp(`\\s*${dryClean}\\s*`, "i"), " ")
+        : text;
+      appendUnique(fabricParts, fabricText);
+      continue;
+    }
+
+    if (compositionLike) {
+      appendUnique(fabricParts, text);
+      continue;
+    }
+
+    if (careLike) {
+      appendUnique(careParts, text);
+      continue;
+    }
+
+    kept.push(text);
+  }
+
+  return {
+    cleanedDescription: kept.join(" ").trim(),
+    fabric: fabricParts.length ? fabricParts.join(". ") : null,
+    care: careParts.length ? careParts.join(". ") : null,
+    dispatchTime,
+  };
+}
 
 function moneyToNumber(m: ShopifyMoney): number {
   return Math.round(parseFloat(m.amount));
@@ -212,7 +307,7 @@ function mapCollection(
   if (type.includes("dress")) return "dresses";
   if (type.includes("coord") || type.includes("co-ord") || type.includes("co ord"))
     return "co-ords";
-  if (type.includes("trouser") || type.includes("pant")) return "trousers";
+  if (type.includes("trouser") || type.includes("pant") || type.includes("bottom")) return "bottoms";
   if (type.includes("skirt")) return "skirts";
   if (type.includes("shirt") || type.includes("top")) return "shirts-tops";
   return "shirts-tops";
@@ -264,6 +359,7 @@ export function mapShopifyProduct(product: ShopifyProduct): Product {
   const colors = [...new Set(variants.map((v) => v.color))];
   const sizes = [...new Set(variants.map((v) => v.size))];
   const collection = mapCollection(product);
+  const extracted = extractDescriptionDetails(product.description || "");
   const category =
     product.collections.nodes.find((c) => c.handle === collection)?.title ||
     product.productType ||
@@ -275,11 +371,20 @@ export function mapShopifyProduct(product: ShopifyProduct): Product {
     title: product.title,
     category,
     collection,
-    description: product.description || "",
+    description: extracted.cleanedDescription || product.description || "",
     price: moneyToNumber(product.priceRange.minVariantPrice),
-    fabric: product.fabric?.value || "See care label",
-    care: product.care?.value || "Dry clean only",
-    dispatchTime: product.dispatchTime?.value || "5-7 days",
+    fabric: mergeProductField(
+      product.fabric?.value,
+      extracted.fabric,
+      "See care label"
+    ),
+    care: mergeProductField(
+      product.care?.value,
+      extracted.care,
+      "Dry clean only"
+    ),
+    dispatchTime:
+      product.dispatchTime?.value || extracted.dispatchTime || "5-7 days",
     colors,
     sizes,
     images: mapImages(product),
