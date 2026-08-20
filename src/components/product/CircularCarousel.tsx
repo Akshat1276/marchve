@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type TouchEvent } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ProductImage } from "@/lib/shopify/types";
 import { cn } from "@/lib/utils";
@@ -13,15 +13,15 @@ interface CircularCarouselProps {
 
 /** Cards peeking behind the focused frame, stacked to the right. */
 const RANGE = 4;
-/**
- * Focused frame is 1.5× the previous circular carousel (0.375 × 0.5).
- * Every card shares the same size and stays upright — only X offset changes.
- */
-const BOX_W = 0.5625;
-const BOX_H = 0.75;
-/** Horizontal peek per stacked card, in `basis` units. */
-const PEEK_X = 0.09;
+/** Portrait card aspect in layout units (width / height ≈ 3/4). */
+const BOX_W = 0.68;
+const BOX_H = 0.9067;
+/** Desktop peek spacing — keeps a clear stack without wasting width. */
+const PEEK_X = 0.05;
+/** Tighter peek on narrow screens so the front card can grow. */
+const PEEK_X_MOBILE = 0.032;
 const STACK_OPACITY = [1, 0.78, 0.58, 0.4, 0.26];
+const SWIPE_THRESHOLD = 48;
 
 function mod(n: number, m: number) {
   return ((n % m) + m) % m;
@@ -29,7 +29,7 @@ function mod(n: number, m: number) {
 
 /**
  * Cascade gallery: the focused frame sits large in front; remaining shots
- * fan to the right behind it. Click a peeking card to bring it forward.
+ * fan to the right behind it. Click / swipe a card to bring it forward.
  */
 export function CircularCarousel({
   images,
@@ -38,6 +38,7 @@ export function CircularCarousel({
   const [index, setIndex] = useState(0);
   const [stage, setStage] = useState({ w: 0, h: 0 });
   const stageRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number | null>(null);
   const reduceMotion = useReducedMotion();
 
   const goTo = useCallback(
@@ -53,12 +54,22 @@ export function CircularCarousel({
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      setStage({ w: width, h: height });
-    });
+
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      const w = rect.width || el.clientWidth;
+      const h = rect.height || el.clientHeight;
+      if (w > 0 && h > 0) setStage({ w, h });
+    };
+
+    measure();
+    const observer = new ResizeObserver(() => measure());
     observer.observe(el);
-    return () => observer.disconnect();
+    window.addEventListener("orientationchange", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("orientationchange", measure);
+    };
   }, []);
 
   useEffect(() => {
@@ -70,15 +81,31 @@ export function CircularCarousel({
     return () => window.removeEventListener("keydown", onKey);
   }, [goTo, index]);
 
+  const onTouchStart = (e: TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const onTouchEnd = (e: TouchEvent) => {
+    const start = touchStartX.current;
+    touchStartX.current = null;
+    if (start == null) return;
+    const end = e.changedTouches[0]?.clientX;
+    if (end == null) return;
+    const delta = end - start;
+    if (Math.abs(delta) < SWIPE_THRESHOLD) return;
+    // Swipe left → next; swipe right → previous
+    goTo(delta < 0 ? index + 1 : index - 1);
+  };
+
   if (!images.length) {
     return (
-      <div className="relative flex h-full min-h-[70vh] items-center justify-center bg-surface-container-low md:min-h-screen" />
+      <div className="relative h-[70vh] bg-surface-container-low md:h-screen" />
     );
   }
 
   if (reduceMotion) {
     return (
-      <div className="relative flex h-full min-h-[70vh] flex-col items-center justify-center bg-surface-container-low px-6 py-12 md:min-h-screen">
+      <div className="relative flex h-[70vh] flex-col items-center justify-center bg-surface-container-low px-6 py-12 md:h-screen">
         <div className="relative aspect-[3/4] w-full max-w-xl overflow-hidden shadow-2xl">
           <Image
             src={images[index].src}
@@ -107,24 +134,38 @@ export function CircularCarousel({
     );
   }
 
+  const isNarrow = stage.w > 0 && stage.w < 768;
+  const peekX = isNarrow ? PEEK_X_MOBILE : PEEK_X;
   const spanLeft = BOX_W / 2;
-  const spanRight = BOX_W / 2 + RANGE * PEEK_X;
+  const spanRight = BOX_W / 2 + RANGE * peekX;
   const spanVert = BOX_H / 2;
 
-  const basis = Math.min(
-    (stage.w * 0.9) / (spanLeft + spanRight),
-    (stage.h * 0.86) / (spanVert * 2)
-  );
+  // Use nearly the full stage width; tighter peeks free room for a larger front card.
+  const widthPad = isNarrow ? 0.97 : 0.94;
+  const heightPad = isNarrow ? 0.9 : 0.86;
+  const widthBasis =
+    stage.w > 0 ? (stage.w * widthPad) / (spanLeft + spanRight) : 0;
+  const heightBasis =
+    stage.h > 0 ? (stage.h * heightPad) / (spanVert * 2) : widthBasis;
+  const basis =
+    widthBasis > 0 && heightBasis > 0
+      ? Math.min(widthBasis, heightBasis)
+      : Math.max(widthBasis, heightBasis);
+
   const boxW = BOX_W * basis;
   const boxH = BOX_H * basis;
   const originX = stage.w * 0.5 - ((spanRight - spanLeft) / 2) * basis;
   const originY = stage.h / 2;
 
   return (
-    <div className="relative flex h-full min-h-[70vh] items-center justify-center overflow-hidden bg-surface-container-low md:min-h-screen">
+    <div
+      className="relative h-[70vh] overflow-hidden bg-surface-container-low touch-pan-y md:h-screen"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
       <div
         ref={stageRef}
-        className="relative h-full w-full"
+        className="absolute inset-0"
         role="listbox"
         aria-label="Product images"
       >
@@ -134,13 +175,13 @@ export function CircularCarousel({
             if (fan > RANGE) return null;
 
             const isActive = fan === 0;
-            const x = originX + fan * PEEK_X * basis;
+            const x = originX + fan * peekX * basis;
             const y = originY;
             const opacity = STACK_OPACITY[fan] ?? 0.26;
 
             return (
               <motion.button
-                key={i}
+                key={`${image.src}-${i}`}
                 type="button"
                 role="option"
                 aria-selected={isActive}
@@ -178,7 +219,10 @@ export function CircularCarousel({
                 whileHover={
                   isActive
                     ? undefined
-                    : { x: x - boxW / 2 + 6, opacity: Math.min(1, opacity + 0.18) }
+                    : {
+                        x: x - boxW / 2 + 6,
+                        opacity: Math.min(1, opacity + 0.18),
+                      }
                 }
                 onClick={() => {
                   if (!isActive) goTo(i);
@@ -190,15 +234,15 @@ export function CircularCarousel({
                   fill
                   draggable={false}
                   className="pointer-events-none select-none object-cover"
-                  sizes={isActive ? "(max-width: 768px) 80vw, 48vw" : "28vw"}
-                  priority={isActive}
+                  sizes={isActive ? "(max-width: 768px) 85vw, 48vw" : "28vw"}
+                  priority={isActive || fan <= 1}
                 />
               </motion.button>
             );
           })}
       </div>
 
-      <div className="absolute bottom-16 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 md:bottom-20">
+      <div className="pointer-events-none absolute bottom-16 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 md:bottom-20">
         {images.map((_, i) => (
           <button
             key={i}
@@ -206,7 +250,7 @@ export function CircularCarousel({
             aria-label={`Go to image ${i + 1}`}
             onClick={() => goTo(i)}
             className={cn(
-              "h-1.5 transition-all duration-500",
+              "pointer-events-auto h-1.5 transition-all duration-500",
               i === index
                 ? "w-6 bg-primary"
                 : "w-1.5 bg-outline-variant/50 hover:bg-secondary"
@@ -215,8 +259,9 @@ export function CircularCarousel({
         ))}
       </div>
 
-      <p className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap text-center font-label-caps text-on-surface-variant md:bottom-10">
-        Click a card to bring it forward
+      <p className="pointer-events-none absolute bottom-8 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap text-center font-label-caps text-on-surface-variant md:bottom-10">
+        <span className="md:hidden">Swipe or tap a card</span>
+        <span className="hidden md:inline">Click a card to bring it forward</span>
       </p>
     </div>
   );

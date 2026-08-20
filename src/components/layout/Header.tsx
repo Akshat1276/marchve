@@ -144,7 +144,7 @@ export function Header() {
 
           <Link
             href="/"
-            className="absolute left-1/2 -translate-x-1/2 max-md:scale-[0.72] md:scale-100"
+            className="absolute left-1/2 -translate-x-1/2 max-md:scale-[0.576] md:scale-100"
           >
             <BrandName />
           </Link>
