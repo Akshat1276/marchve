@@ -233,7 +233,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Linen-cotton co-ord in cream. Breathable structure for warm climates.",
     price: 10000,
-    fabric: "Linen-cotton blend",
+    fabric: "Cotton Linen blend",
     care: "Dry clean only, steam on low heat",
     dispatchTime: "5-7 days",
     colors: ["Cream"],

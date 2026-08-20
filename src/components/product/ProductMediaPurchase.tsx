@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ScrollGallery } from "@/components/product/ScrollGallery";
+import { CircularCarousel } from "@/components/product/CircularCarousel";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
 import { imagesForColor } from "@/lib/shopify/images";
 import type { Product } from "@/lib/shopify/types";
@@ -24,14 +24,11 @@ export function ProductMediaPurchase({ product }: { product: Product }) {
   );
 
   return (
-    <section className="border-b border-outline-variant/20 md:flex md:items-start">
-      {/* Left — scrollable image stack */}
-      <div className="md:w-[60%]">
-        <ScrollGallery key={color} images={filteredImages} />
+    <section className="flex flex-col border-b border-outline-variant/20 md:flex-row">
+      <div className="border-outline-variant/20 md:w-3/5 md:border-r">
+        <CircularCarousel key={color} images={filteredImages} />
       </div>
-
-      {/* Right — sticky purchase panel */}
-      <div className="md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:w-[40%] md:overflow-y-auto md:border-l md:border-outline-variant/20">
+      <div className="md:w-2/5">
         <ProductPurchase
           product={product}
           color={color}

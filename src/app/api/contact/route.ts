@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
     // Wire Resend / SMTP later. For now acknowledge + log server-side.
     console.info("[contact]", {
-      to: process.env.CONTACT_TO_EMAIL ?? "maisonmarchve@gmail.com",
+      to: process.env.CONTACT_TO_EMAIL ?? "hello@marchve.com",
       ...data,
     });
 

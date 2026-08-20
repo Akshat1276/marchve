@@ -11,16 +11,16 @@ const HERO = {
 
 const SPLIT = [
   {
-    href: "/shop/shirts-tops",
-    label: "Shop Blazers",
-    src: "/products/IMAGE-715.jpg",
-    alt: "M'ARCHVE — shop blazers",
-  },
-  {
     href: "/shop/dresses",
     label: "Shop Dresses",
-    src: "/products/IMAGE-952.jpg",
+    src: "/products/IMAGE-289.jpg",
     alt: "M'ARCHVE — shop dresses",
+  },
+  {
+    href: "/shop/co-ords",
+    label: "Shop Co-ord Sets",
+    src: "/products/IMAGE-823.jpg",
+    alt: "M'ARCHVE — shop co-ord sets",
   },
 ] as const;
 

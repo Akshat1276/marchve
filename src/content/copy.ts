@@ -25,6 +25,7 @@ export const emptyStates = {
 export const about = {
   eyebrow: "01 — FOUNDATION",
   title: "ABOUT THE BRAND",
+  subtitle: "/maar-kive/",
   paragraphs: [
     'Derived from "My Archive" — a personal collection of timeless pieces, moments, and design memories.',
     "M'ARCHVE is a contemporary womenswear label creating elevated wardrobe essentials rooted in modern tailoring and timeless design.",
@@ -53,7 +54,7 @@ export const social = {
 export const contact = {
   eyebrow: "03 — INQUIRIES",
   title: "CONTACT US",
-  email: "maisonmarchve@gmail.com",
+  email: "hello@marchve.com",
   phone: "+91 98202 55349",
   phoneLabel: "WhatsApp",
   phoneHref: "https://wa.me/919820255349",
@@ -65,8 +66,8 @@ export const contact = {
     },
     {
       label: "EMAIL",
-      value: "maisonmarchve@gmail.com",
-      href: "mailto:maisonmarchve@gmail.com",
+      value: "hello@marchve.com",
+      href: "mailto:hello@marchve.com",
     },
   ],
   location: {

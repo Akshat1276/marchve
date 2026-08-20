@@ -187,6 +187,95 @@ const COLLECTION_HANDLES: Exclude<CollectionHandle, "all">[] = [
   "skirts",
 ];
 
+/** Product-specific composition overrides (Shopify metafield / description). */
+const PRODUCT_FABRIC_OVERRIDES: Record<string, string> = {
+  "muse-coord-set": "Cotton Linen blend",
+};
+
+const BLEND_FABRIC_PATTERN =
+  /\b(?:\d{1,3}\s*%\s*)?(?:[\w-]+\s+){0,5}blend\b/i;
+const FABRIC_KEYWORD_PATTERN =
+  /\b(cotton|linen|tencel|polyester|lyocell|wool|silk|nylon|rayon|viscose|poly|spandex|elastane)\b/i;
+
+function normalizeFabric(value: string) {
+  return value.replace(/[.]+$/, "").trim();
+}
+
+function isCompositionText(text: string) {
+  const normalized = text.trim();
+  if (!normalized) return false;
+  if (/\b\d{1,3}\s*%/i.test(normalized)) return true;
+  if (/\b(composition|fabric)\b/i.test(normalized)) return true;
+  if (BLEND_FABRIC_PATTERN.test(normalized)) return true;
+  if (
+    FABRIC_KEYWORD_PATTERN.test(normalized) &&
+    /\bblend\b/i.test(normalized) &&
+    normalized.split(/\s+/).length <= 8
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function splitFabricFromSentence(text: string) {
+  const trailingMatch = text.match(
+    /^(.*?)(?:[.\s]+)((?:\d{1,3}\s*%\s*)?(?:[\w-]+\s+){0,5}blend)\.?\s*$/i
+  );
+  if (trailingMatch) {
+    const narrative = trailingMatch[1].replace(/[.]+$/, "").trim();
+    const fabric = normalizeFabric(trailingMatch[2]);
+    return { narrative, fabric };
+  }
+
+  if (isCompositionText(text)) {
+    return { narrative: "", fabric: normalizeFabric(text) };
+  }
+
+  return { narrative: text, fabric: null };
+}
+
+function resolveProductFabric(product: ShopifyProduct, extracted: string | null) {
+  const title = product.title.toLowerCase();
+  if (title.includes("muse") && title.includes("co-ord")) {
+    return "Cotton Linen blend";
+  }
+
+  const handleOverride = PRODUCT_FABRIC_OVERRIDES[product.handle];
+  if (handleOverride) return handleOverride;
+
+  return mergeProductField(
+    product.fabric?.value,
+    extracted,
+    "See care label"
+  );
+}
+
+function stripTrailingFabricFromNarrative(narrative: string) {
+  let result = narrative.trim();
+  const patterns = [
+    /\s+(?:\d{1,3}\s*%\s*)?(?:[\w-]+\s+){0,5}blend\.?\s*$/i,
+    /\s+(?:[\w-]+\s+){0,4}(?:cotton|linen|tencel|polyester|lyocell|wool|silk|nylon|rayon|viscose)(?:\s+[\w-]+){0,3}\s*blend\.?\s*$/i,
+    /\s+linen(?:\s+cotton)?(?:\s+blend)?\.?\s*$/i,
+    /\s+cotton\s+linen(?:\s+blend)?\.?\s*$/i,
+  ];
+
+  for (const pattern of patterns) {
+    result = result.replace(pattern, "").trim();
+  }
+
+  return result.replace(/[.!?]+\s*$/, "").trim();
+}
+
+function finalizeDescription(paragraphs: string[]) {
+  const joined = paragraphs
+    .map((paragraph) => stripTrailingFabricFromNarrative(paragraph))
+    .filter((paragraph) => paragraph && !isCompositionText(paragraph))
+    .join(" ")
+    .trim();
+
+  return stripTrailingFabricFromNarrative(joined);
+}
+
 function appendUnique(parts: string[], value: string) {
   const normalized = value.replace(/[.]+$/, "").trim();
   if (!normalized) return;
@@ -236,9 +325,6 @@ function extractDescriptionDetails(description: string) {
     const text = sentence.trim();
     if (!text) continue;
 
-    const compositionLike =
-      /\b\d{1,3}\s*%/i.test(text) ||
-      /\b(composition|fabric)\b/i.test(text);
     const careLike = /\b(dry clean|hand wash|machine wash|steam)\b/i.test(text);
     const shippingMatch = text.match(
       /\bships?\s+in\s+(\d+\s*-\s*\d+\s*days?)\b/i
@@ -249,20 +335,27 @@ function extractDescriptionDetails(description: string) {
       continue;
     }
 
-    if (compositionLike && careLike) {
-      const dryCleanMatch = text.match(/\bDry\s*Clean\s*only\b/i);
+    const { narrative, fabric } = splitFabricFromSentence(text);
+    if (fabric) appendUnique(fabricParts, fabric);
+
+    const compositionLike = isCompositionText(narrative);
+    const narrativeCareLike =
+      narrative && /\b(dry clean|hand wash|machine wash|steam)\b/i.test(narrative);
+
+    if (compositionLike && narrativeCareLike && narrative) {
+      const dryCleanMatch = narrative.match(/\bDry\s*Clean\s*only\b/i);
       const dryClean = dryCleanMatch?.[0] ?? null;
       if (dryClean) appendUnique(careParts, dryClean);
 
       const fabricText = dryClean
-        ? text.replace(new RegExp(`\\s*${dryClean}\\s*`, "i"), " ")
-        : text;
+        ? narrative.replace(new RegExp(`\\s*${dryClean}\\s*`, "i"), " ")
+        : narrative;
       appendUnique(fabricParts, fabricText);
       continue;
     }
 
-    if (compositionLike) {
-      appendUnique(fabricParts, text);
+    if (compositionLike && narrative) {
+      appendUnique(fabricParts, narrative);
       continue;
     }
 
@@ -271,11 +364,16 @@ function extractDescriptionDetails(description: string) {
       continue;
     }
 
-    kept.push(text);
+    if (narrative) {
+      const cleanedNarrative = stripTrailingFabricFromNarrative(narrative);
+      if (cleanedNarrative && !isCompositionText(cleanedNarrative)) {
+        kept.push(cleanedNarrative);
+      }
+    }
   }
 
   return {
-    cleanedDescription: kept.join(" ").trim(),
+    cleanedDescription: finalizeDescription(kept),
     fabric: fabricParts.length ? fabricParts.join(". ") : null,
     care: careParts.length ? careParts.join(". ") : null,
     dispatchTime,
@@ -373,11 +471,7 @@ export function mapShopifyProduct(product: ShopifyProduct): Product {
     collection,
     description: extracted.cleanedDescription || product.description || "",
     price: moneyToNumber(product.priceRange.minVariantPrice),
-    fabric: mergeProductField(
-      product.fabric?.value,
-      extracted.fabric,
-      "See care label"
-    ),
+    fabric: resolveProductFabric(product, extracted.fabric),
     care: mergeProductField(
       product.care?.value,
       extracted.care,

@@ -11,17 +11,20 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <div className="pt-20">
-      <section className="grid min-h-[819px] grid-cols-1 border-b border-outline-variant/20 md:grid-cols-2">
-        <div className="relative flex flex-col justify-center bg-surface-container-highest p-margin-mobile md:p-margin-desktop">
+      <section className="flex min-h-[819px] flex-col border-b border-outline-variant/20 md:flex-row">
+        <div className="relative flex min-h-0 flex-1 flex-col justify-center bg-surface-container-highest p-margin-mobile md:p-margin-desktop">
           <div className="absolute left-margin-desktop top-margin-desktop hidden md:block">
             <span className="font-label-caps text-on-surface-variant">
               {about.eyebrow}
             </span>
           </div>
           <div className="mx-auto max-w-md md:mx-0 md:ml-auto md:mr-24 lg:mr-32">
-            <h1 className="mb-8 font-headline-md leading-tight text-primary">
+            <h1 className="font-headline-md leading-tight text-primary">
               {about.title}
             </h1>
+            <p className="mb-8 mt-4 font-body-main text-lg leading-snug text-on-surface-variant md:text-xl">
+              {about.subtitle}
+            </p>
             <div className="space-y-6 font-body-main text-on-surface-variant">
               {about.paragraphs.map((p) => (
                 <p key={p.slice(0, 32)}>{p}</p>
@@ -39,13 +42,14 @@ export default function AboutPage() {
             </ul>
           </div>
         </div>
-        <div className="relative h-[614px] overflow-hidden md:h-auto">
+        <div className="h-[614px] shrink-0 overflow-hidden bg-surface md:flex md:h-auto md:self-stretch">
           <Image
-            src="/products/IMAGE-934.jpg"
+            src="/products/IMAGE-1.jpg"
             alt="Editorial portrait for M'ARCHVE"
-            fill
-            className="object-cover transition-all duration-1000 ease-in-out hover:scale-[1.02]"
-            sizes="(max-width: 768px) 100vw, 50vw"
+            width={3994}
+            height={5991}
+            className="h-full w-full object-cover transition-all duration-1000 ease-in-out hover:scale-[1.02] md:w-auto md:max-w-none"
+            sizes="(max-width: 768px) 100vw, 40vw"
             priority
           />
         </div>

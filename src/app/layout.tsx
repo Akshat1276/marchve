@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Lexend_Peta } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { NewsletterPopup } from "@/components/layout/NewsletterPopup";
 import "./globals.css";
 
 const lexendPeta = Lexend_Peta({
@@ -36,6 +37,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <NewsletterPopup />
       </body>
     </html>
   );
