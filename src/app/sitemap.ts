@@ -1,11 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getCollections, getProducts } from "@/lib/shopify/catalog";
-
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-  "https://www.marchve.com";
+import { getSiteUrl } from "@/lib/site-url";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const siteUrl = getSiteUrl();
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -15,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/shipping-returns",
     "/shipping-delivery",
   ].map((path) => ({
-    url: `${SITE_URL}${path}`,
+    url: `${siteUrl}${path}`,
     lastModified: now,
     changeFrequency: path === "" || path === "/shop" ? "daily" : "monthly",
     priority: path === "" ? 1 : path === "/shop" ? 0.9 : 0.6,
@@ -24,7 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const collections = getCollections()
     .filter((c) => c.handle !== "all")
     .map((c) => ({
-      url: `${SITE_URL}/shop/${c.handle}`,
+      url: `${siteUrl}/shop/${c.handle}`,
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.8,
@@ -34,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const all = await getProducts("all");
     products = all.map((product) => ({
-      url: `${SITE_URL}/product/${product.handle}`,
+      url: `${siteUrl}/product/${product.handle}`,
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.7,

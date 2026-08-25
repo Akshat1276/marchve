@@ -3,6 +3,7 @@ import { Lexend_Peta } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { NewsletterPopup } from "@/components/layout/NewsletterPopup";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const lexendPeta = Lexend_Peta({
@@ -11,11 +12,10 @@ const lexendPeta = Lexend_Peta({
   weight: ["400"],
 });
 
+const siteUrl = getSiteUrl();
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
-      "https://www.marchve.com"
-  ),
+  metadataBase: new URL(siteUrl),
   title: {
     default: "M'ARCHVE — Contemporary Womenswear | Mumbai",
     template: "%s · M'ARCHVE",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "co-ords",
     "slow fashion",
   ],
-  authors: [{ name: "M'ARCHVE", url: "https://www.marchve.com" }],
+  authors: [{ name: "M'ARCHVE", url: siteUrl }],
   creator: "M'ARCHVE",
   publisher: "M'ARCHVE",
   alternates: {
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://www.marchve.com",
+    url: siteUrl,
     siteName: "M'ARCHVE",
     title: "M'ARCHVE — Contemporary Womenswear | Mumbai",
     description:
