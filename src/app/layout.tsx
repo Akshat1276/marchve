@@ -12,12 +12,62 @@ const lexendPeta = Lexend_Peta({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+      "https://www.marchve.com"
+  ),
   title: {
-    default: "M'ARCHVE — A Modern Archive",
+    default: "M'ARCHVE — Contemporary Womenswear | Mumbai",
     template: "%s · M'ARCHVE",
   },
   description:
     "M'ARCHVE is a contemporary womenswear label creating elevated wardrobe essentials rooted in modern tailoring and timeless design. Based in Mumbai.",
+  applicationName: "M'ARCHVE",
+  keywords: [
+    "M'ARCHVE",
+    "Marchve",
+    "womenswear",
+    "contemporary fashion",
+    "Mumbai fashion",
+    "dresses",
+    "co-ords",
+    "slow fashion",
+  ],
+  authors: [{ name: "M'ARCHVE", url: "https://www.marchve.com" }],
+  creator: "M'ARCHVE",
+  publisher: "M'ARCHVE",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://www.marchve.com",
+    siteName: "M'ARCHVE",
+    title: "M'ARCHVE — Contemporary Womenswear | Mumbai",
+    description:
+      "Elevated wardrobe essentials rooted in modern tailoring and timeless design. Based in Mumbai.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "M'ARCHVE — Contemporary Womenswear | Mumbai",
+    description:
+      "Elevated wardrobe essentials rooted in modern tailoring and timeless design. Based in Mumbai.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
 };
 
 export default function RootLayout({

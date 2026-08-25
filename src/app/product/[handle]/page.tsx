@@ -1,7 +1,38 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { ProductMediaPurchase } from "@/components/product/ProductMediaPurchase";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { getProduct, getProducts } from "@/lib/shopify/catalog";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ handle: string }>;
+}): Promise<Metadata> {
+  const { handle } = await params;
+  const product = await getProduct(handle);
+  if (!product) return { title: "Product" };
+
+  const description =
+    product.description?.slice(0, 160) ||
+    `${product.title} — ${product.category} from M'ARCHVE.`;
+
+  return {
+    title: product.title,
+    description,
+    alternates: {
+      canonical: `/product/${product.handle}`,
+    },
+    openGraph: {
+      title: `${product.title} · M'ARCHVE`,
+      description,
+      url: `/product/${product.handle}`,
+      images: product.images[0]
+        ? [{ url: product.images[0].src, alt: product.images[0].alt }]
+        : undefined,
+    },
+  };
+}
 
 export default async function ProductPage({
   params,
