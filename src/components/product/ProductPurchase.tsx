@@ -7,6 +7,7 @@ import type { Product } from "@/lib/shopify/types";
 import { formatINR, cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
 import { Loader } from "@/components/ui/Loader";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 function formatPriceWithTax(productPrice: number) {
   const amount = new Intl.NumberFormat("en-IN", {
@@ -48,6 +49,13 @@ export function ProductPurchase({
     setAdding(true);
     try {
       await addItem(product, { color, size });
+      trackMetaEvent("AddToCart", {
+        content_ids: [product.id],
+        content_name: product.title,
+        content_type: "product",
+        value: product.price,
+        currency: "INR",
+      });
     } catch (error) {
       console.error("[add to bag]", error);
     } finally {

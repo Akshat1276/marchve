@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { BrandName } from "@/components/ui/BrandName";
 import { openNewsletterSuccess } from "@/components/layout/NewsletterPopup";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 import { social } from "@/content/copy";
 
 const EXPLORE = [
@@ -27,6 +28,7 @@ export function Footer() {
     window.setTimeout(() => {
       setEmail("");
       setSubmitting(false);
+      trackMetaEvent("Lead");
       openNewsletterSuccess();
     }, 250);
   };

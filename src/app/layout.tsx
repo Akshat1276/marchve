@@ -3,6 +3,8 @@ import { Lexend_Peta } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { NewsletterPopup } from "@/components/layout/NewsletterPopup";
+import { MetaPixel } from "@/components/analytics/MetaPixel";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
@@ -88,6 +90,8 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <NewsletterPopup />
+        <MetaPixel />
+        <GoogleAnalytics />
       </body>
     </html>
   );

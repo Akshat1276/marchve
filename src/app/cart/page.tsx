@@ -9,6 +9,7 @@ import { resolveCheckoutUrl } from "@/lib/shopify/checkout-url";
 import { formatINR } from "@/lib/utils";
 import { useCartStore } from "@/store/cart";
 import { Loader } from "@/components/ui/Loader";
+import { trackMetaEvent } from "@/lib/meta-pixel";
 
 export default function CartPage() {
   const lines = useCartStore((s) => s.lines);
@@ -48,6 +49,12 @@ export default function CartPage() {
       return;
     }
     setCheckingOut(true);
+    trackMetaEvent("InitiateCheckout", {
+      content_ids: lines.map((line) => line.merchandiseId),
+      num_items: count,
+      value: subtotal(),
+      currency: "INR",
+    });
     window.location.href = resolveCheckoutUrl(checkoutUrl);
   };
 

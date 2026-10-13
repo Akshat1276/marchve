@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { CircularCarousel } from "@/components/product/CircularCarousel";
 import { ProductPurchase } from "@/components/product/ProductPurchase";
+import { MetaProductView } from "@/components/analytics/MetaProductView";
 import { imagesForColor } from "@/lib/shopify/images";
 import type { Product } from "@/lib/shopify/types";
 
@@ -25,6 +26,7 @@ export function ProductMediaPurchase({ product }: { product: Product }) {
 
   return (
     <section className="flex flex-col border-b border-outline-variant/20 md:flex-row">
+      <MetaProductView product={product} />
       <div className="border-outline-variant/20 md:w-3/5 md:border-r">
         <CircularCarousel key={color} images={filteredImages} />
       </div>
