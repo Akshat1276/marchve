@@ -3,6 +3,7 @@ import { Lexend_Peta } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { NewsletterPopup } from "@/components/layout/NewsletterPopup";
+import Script from "next/script";
 import { MetaPixel } from "@/components/analytics/MetaPixel";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { getSiteUrl } from "@/lib/site-url";
@@ -77,6 +78,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Read at runtime on the server — not baked in at build time like NEXT_PUBLIC_ in client bundles.
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   return (
       <html lang="en" data-scroll-behavior="smooth" className={`${lexendPeta.variable} h-full antialiased`}>
       <head>
@@ -91,7 +94,18 @@ export default function RootLayout({
         <Footer />
         <NewsletterPopup />
         <MetaPixel />
-        <GoogleAnalytics />
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`}
+            </Script>
+            <GoogleAnalytics gaId={gaId} />
+          </>
+        )}
       </body>
     </html>
   );
