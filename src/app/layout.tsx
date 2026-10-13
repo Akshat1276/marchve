@@ -78,8 +78,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Read at runtime on the server — not baked in at build time like NEXT_PUBLIC_ in client bundles.
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const gaId = "G-7FSNDWW9FY";
   return (
       <html lang="en" data-scroll-behavior="smooth" className={`${lexendPeta.variable} h-full antialiased`}>
       <head>
