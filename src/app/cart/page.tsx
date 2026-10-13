@@ -50,7 +50,7 @@ export default function CartPage() {
     }
     setCheckingOut(true);
     trackMetaEvent("InitiateCheckout", {
-      content_ids: lines.map((line) => line.merchandiseId),
+      content_ids: lines.map((line) => line.merchandiseId).filter((id): id is string => id !== undefined),
       num_items: count,
       value: subtotal(),
       currency: "INR",
